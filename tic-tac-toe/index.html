@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=400, user-scalable=no">
@@ -49,6 +49,8 @@
             font-style: italic;
             color: red;
             text-shadow: 0 0 10px purple;
+            position: relative;
+            z-index: 1;
         }
         table {
             width: 210px;
@@ -57,6 +59,8 @@
             background: aqua;
             border-spacing: 0;
             box-shadow: 0 0 90px 0 blue;
+            position: relative;
+            z-index: 1;
         }
         td {
             font-size: 21px;
@@ -85,37 +89,8 @@
             return field;
         };
 
-        var whoWin = function() {
-            var field = getField();
-            if (field[0] !== '-' && field[0] === field[1] && field[1] === field[2]) {
-                return field[0];
-            }
-            if (field[3] !== '-' && field[3] === field[4] && field[4] === field[5]) {
-                return field[3];
-            }
-            if (field[6] !== '-' && field[6] === field[7] && field[7] === field[8]) {
-                return field[6];
-            }
-            if (field[0] !== '-' && field[0] === field[3] && field[3] === field[6]) {
-                return field[0];
-            }
-            if (field[1] !== '-' && field[1] === field[4] && field[4] === field[7]) {
-                return field[1];
-            }
-            if (field[2] !== '-' && field[2] === field[5] && field[5] === field[8]) {
-                return field[2];
-            }
-            if (field[0] !== '-' && field[0] === field[4] && field[4] === field[8]) {
-                return field[0];
-            }
-            if (field[2] !== '-' && field[2] === field[4] && field[4] === field[6]) {
-                return field[2];
-            }
-            return false;
-        };
-
         var winCheck = function() {
-            var winner = whoWin();
+            var winner = whoWins(getField());
             if (winner !== false) {
                 gameEnd = true;
                 setTimeout(function() {
@@ -130,7 +105,7 @@
         };
 
         var move = function() {
-            var pos = ticTacToe(getField());
+            var pos = AI(getField());
             cells[pos - 1].innerHTML = 'O';
             filledCells++;
             winCheck();
@@ -151,7 +126,7 @@
         }
     </script>
 
-    <a target="_blank" style="position: fixed; top: 0; right: 0;" href="https://github.com/lmcsu/tic-tac-toe">
+    <a target="_blank" style="position: fixed; top: 0; right: 0; z-index: 0;" href="https://github.com/lmcsu/tic-tac-toe">
         <img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_green_007200.png?resize=149%2C149" alt="Fork me on GitHub">
     </a>
 </body>
