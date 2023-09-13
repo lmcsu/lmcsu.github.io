@@ -43,13 +43,12 @@
             height: 200px;
         }
 
-        .main input[readonly] {
+        .main textarea[readonly] {
             background-color: #eee;
         }
 
         #result {
-            direction: rtl;
-            text-align: left;
+            word-break: break-all;
         }
     </style>
     <div class="main">
@@ -58,7 +57,7 @@
         </div>
         <input id="url" type="text" value="https://example.com/" spellcheck="false">
         <textarea id="data" spellcheck="false"></textarea>
-        <input id="result" type="text" placeholder="Result" spellcheck="false" readonly>
+        <textarea id="result" spellcheck="false" readonly></textarea>
     </div>
     <script>
         (() => {
@@ -97,10 +96,6 @@
 
             elData.value = 'key: value\nkey2: value2';
             update();
-
-            elResult.addEventListener('click', () => {
-                elResult.select();
-            })
         })();
     </script>
 </body>
