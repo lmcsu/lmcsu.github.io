@@ -8,24 +8,33 @@
 </head>
 <body>
     <style>
+        body {
+            margin: 30px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
         .main {
-            max-width: 400px;
-            margin: 100px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 800px;
+            margin: 50px auto;
             border: 1px solid black;
             padding: 20px;
             box-sizing: border-box;
             background-color: #fafafa;
+            font-size: 18px;
         }
 
         .main__header {
             text-align: center;
             font-size: 30px;
             margin-bottom: 20px;
-            font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
+            width: 100%;
         }
 
-        .main input,
+        .main input[type="text"],
         .main textarea {
             display: block;
             width: 100%;
@@ -37,14 +46,34 @@
             background-color: white;
         }
 
+        .main input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
         .main textarea {
             resize: none;
-            margin: 20px auto;
             height: 200px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            user-select: none;
         }
 
         .main textarea[readonly] {
             background-color: #eee;
+        }
+
+        #data {
+            white-space: pre;
+            margin: 20px auto;
         }
 
         #result {
@@ -55,8 +84,12 @@
         <div class="main__header">
             URL Builder
         </div>
-        <input id="url" type="text" value="https://example.com/" spellcheck="false">
+        <input id="url" type="text" spellcheck="false">
         <textarea id="data" spellcheck="false"></textarea>
+        <label>
+            <input id="encode" type="checkbox">
+            Encode
+        </label>
         <textarea id="result" spellcheck="false" readonly></textarea>
     </div>
     <script>
@@ -64,6 +97,7 @@
             const elUrl = document.getElementById('url');
             const elData = document.getElementById('data');
             const elResult = document.getElementById('result');
+            const elEncode = document.getElementById('encode');
             const update = () => {
                 const data = elData.value
                     .split('\n')
@@ -82,10 +116,24 @@
                     }, {});
 
                 const str = Object.entries(data)
-                    .map(([key, value]) => key + (value ? '=' : '') + value)
+                    .map(([key, value]) => {
+                        if (elEncode.checked) {
+                            return encodeURIComponent(key) + (value ? '=' : '') + encodeURIComponent(value);
+                        } else {
+                            return key + (value ? '=' : '') + value;
+                        }
+                    })
                     .join('&');
 
                 elResult.value = elUrl.value.trim() + (str ? '?' : '') + str;
+
+                const hash = btoa(JSON.stringify({
+                    url: elUrl.value.trim(),
+                    data: elData.value.trim(),
+                    encode: elEncode.checked,
+                })).replace(/\//g, '_').replace(/\+/g, '-')
+
+                document.location.hash = hash;
             };
             elData.addEventListener('input', update);
             elData.addEventListener('paste', update);
@@ -93,8 +141,19 @@
             elUrl.addEventListener('input', update);
             elUrl.addEventListener('paste', update);
             elUrl.addEventListener('change', update);
+            elEncode.addEventListener('change', update);
 
-            elData.value = 'key: value\nkey2: value2';
+            try {
+                const data = JSON.parse(atob(document.location.hash.replace(/^#/, '').replace(/_/g, '/').replace(/-/g, '+')));
+                console.log(data);
+                elUrl.value = data.url;
+                elData.value = data.data;
+                elEncode.checked = data.encode;
+            } catch (e) {
+                elUrl.value = 'https://example.com/';
+                elData.value = 'key: value\nkey2: value2';
+                elEncode.checked = true;
+            }
             update();
         })();
     </script>
