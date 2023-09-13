@@ -125,10 +125,12 @@
                     })
                     .join('&');
 
-                elResult.value = elUrl.value.trim() + (str ? '?' : '') + str;
+                const url = elUrl.value.trim();
+
+                elResult.value = url + (str ? (url.includes('?') ? '&' : '?') : '') + str;
 
                 const hash = btoa(encodeURIComponent(JSON.stringify({
-                    url: elUrl.value.trim(),
+                    url: url,
                     data: elData.value.trim(),
                     encode: elEncode.checked,
                 }))).replace(/\//g, '_').replace(/\+/g, '-')
