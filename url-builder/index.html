@@ -127,11 +127,11 @@
 
                 elResult.value = elUrl.value.trim() + (str ? '?' : '') + str;
 
-                const hash = btoa(JSON.stringify({
+                const hash = btoa(encodeURIComponent(JSON.stringify({
                     url: elUrl.value.trim(),
                     data: elData.value.trim(),
                     encode: elEncode.checked,
-                })).replace(/\//g, '_').replace(/\+/g, '-')
+                }))).replace(/\//g, '_').replace(/\+/g, '-')
 
                 document.location.hash = hash;
             };
@@ -144,8 +144,7 @@
             elEncode.addEventListener('change', update);
 
             try {
-                const data = JSON.parse(atob(document.location.hash.replace(/^#/, '').replace(/_/g, '/').replace(/-/g, '+')));
-                console.log(data);
+                const data = JSON.parse(decodeURIComponent(atob(document.location.hash.replace(/^#/, '').replace(/_/g, '/').replace(/-/g, '+'))));
                 elUrl.value = data.url;
                 elData.value = data.data;
                 elEncode.checked = data.encode;
