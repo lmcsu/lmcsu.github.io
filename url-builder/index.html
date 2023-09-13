@@ -49,6 +49,7 @@
 
         #result {
             direction: rtl;
+            text-align: left;
         }
     </style>
     <div class="main">
@@ -82,7 +83,7 @@
                     }, {});
 
                 const str = Object.entries(data)
-                    .map(([key, value]) => key + '=' + value)
+                    .map(([key, value]) => key + (value ? '=' : '') + value)
                     .join('&');
 
                 elResult.value = elUrl.value.trim() + (str ? '?' : '') + str;
